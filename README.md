@@ -104,21 +104,21 @@ In the above example, the script will write to debug logs when the script is sta
 
 There are other functions that the scripter may call at any time:
 
-* [**imvu.debug**](#imvu.debug) to send output to the room owner's scripting logs.
-* [**imvu.message_audience**](#imvu.message_audience) to send a message on the Audience message mount.
-* [**imvu.message_scene**](#imvu.message_scene) to send a message on the Scene message mount, which is useful for playing animations.
-* [**imvu.whisper_audience_member**](#imvu.whisper_audience_member) to send a whisper to a member of the Audience.
-* [**imvu.place_furniture**](#imvu.place_furniture) to place furniture in the scene.
-* [**imvu.remove_furniture**](#imvu.remove_furniture) to remove placed furniture from the scene.
-* [**imvu.remove_all_furniture**](#imvu.remove_all_furniture) to remove all furniture placed by the room script.
-* [**imvu.remove_user_from_scene**](#imvu.remove_user_from_scene) to kick a user's avatar out of the scene, turning them from a presenter to an Audience member.
-* [**imvu.move_scene_member**](#imvu.move_scene_member) to move a scene member to a selected seat in the room.
-* [**imvu.send_room_invite**](#imvu.send_room_invite) to send an invitation to another room.
-* [**imvu.control_media**](#imvu.control_media) to play, stop, pause, and otherwise control embedded youtube content.
-* [**imvu.create_poll**](#imvu.create_poll) to create a new poll and registers a callback for when results are available.
-* [**imvu.get_owner_cid**](#imvu.get_owner_cid) to return the room owner's customer id.
-* [**imvu.get_audience_members**](#imvu.get_audience_members) to return a table of the current Audience members.
-* [**imvu.get_scene_members**](#imvu.get_scene_members) to return a table of the current Scene members, ie, presenters.
+* [**imvu.debug**](#imvudebug) to send output to the room owner's scripting logs.
+* [**imvu.message_audience**](#imvumessage_audience) to send a message on the Audience message mount.
+* [**imvu.message_scene**](#imvumessage_scene) to send a message on the Scene message mount, which is useful for playing animations.
+* [**imvu.whisper_audience_member**](#imvuwhisper_audience_member) to send a whisper to a member of the Audience.
+* [**imvu.place_furniture**](#imvuplace_furniture) to place furniture in the scene.
+* [**imvu.remove_furniture**](#imvuremove_furniture) to remove placed furniture from the scene.
+* [**imvu.remove_all_furniture**](#imvuremove_all_furniture) to remove all furniture placed by the room script.
+* [**imvu.remove_user_from_scene**](#imvuremove_user_from_scene) to kick a user's avatar out of the scene, turning them from a presenter to an Audience member.
+* [**imvu.move_scene_member**](#imvumove_scene_member) to move a scene member to a selected seat in the room.
+* [**imvu.send_room_invite**](#imvusend_room_invite) to send an invitation to another room.
+* [**imvu.control_media**](#imvucontrol_media) to play, stop, pause, and otherwise control embedded youtube content.
+* [**imvu.create_poll**](#imvucreate_poll) to create a new poll and registers a callback for when results are available.
+* [**imvu.get_owner_cid**](#imvuget_owner_cid) to return the room owner's customer id.
+* [**imvu.get_audience_members**](#imvuget_audience_members) to return a table of the current Audience members.
+* [**imvu.get_scene_members**](#imvuget_scene_members) to return a table of the current Scene members, ie, presenters.
 
 The following functions are currently in development and may not be accessible to all users:
 
@@ -266,7 +266,7 @@ These methods are available to all scripters. They provide basic interactivity w
 
 This sends output to the room owner's scripting logs. It has a single parameter:
 
-* **content** may be either a string or an `error`, which is defined as a table with `type` and `message` fields. The compatibility with the `error` type is for ease of use when calling methods like [create_poll](#imvu.create_poll), which provide an error_callback parameter.
+* **content** may be either a string or an `error`, which is defined as a table with `type` and `message` fields. The compatibility with the `error` type is for ease of use when calling methods like [create_poll](#imvucreate_poll), which provide an error_callback parameter.
 
 ```
 local function process_results(results)
