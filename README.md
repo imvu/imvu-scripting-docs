@@ -446,7 +446,7 @@ local screen = { pid = 52977230, label="screen", node="furniture.Floor.300", x =
 local media_params = { media_title = "Jazz Cat", media_url = "https://www.youtube.com/watch?v=zWLAbNHn5Ho", media_timestamp = 0, label = "screen", target_name = "material1" }
 imvu.place_furniture(screen)
 
--- note that in this example, the following call may fail, because the furniture placement may not occur in time for the play command to function as expected. In practice, you will want to call play_media forn furniture you placed at startup or in a previous iteration.
+-- note that in this example, the following call may fail, because the furniture placement may not occur in time for the play command to function as expected. In practice, you will want to call play_media from furniture you placed at startup or in a previous iteration.
 imvu.control_media("play_media", media_params)
 
 media_params.media_volume = 50
@@ -475,7 +475,7 @@ This method attempts to create a poll for your guests, and registers a callback 
             * For presenter polls only:
                 * **results.tallies[1].user.cid** is the integer-typed customer id.
                 * **results.tallies[1].user.name** is the display name for the presenter.
-        * **results.votes** lists who voted for what, in an array-style table of results.
+        * [Currently Disabled[<sup>1</sup>](#footnotes)] **results.votes** lists who voted for what, in an array-style table of results.
             * **results.votes[1].voters** is an array-style table of the voters who selected the associated option.
                 * **results.votes[1].voters[1].cid** is the integer typed customer id of the voter.
                 * **results.votes[1].voters[1].name** is the display name of the voter.
@@ -586,3 +586,9 @@ Currently, every individual room is limited to approximately 10 megabytes of mem
 Outgoing messages, room invites, and other output to your visitors are also rate-limited, to help prevent obstructive amounts of spam. No matter what you attempt to do with your script, you should only be able to target current members of the room. This means a user can always escape unwanted behavior by simply leaving your room.
 
 ## Providing Feedback
+
+You may file an issue against this repository, if you have a github account, or use the creator feedback forums where the experiment was first announced. We're eager to hear from our alpha testers about every aspect of the experiment.
+
+## Footnotes
+
+1. Voter output is currently disabled for alpha testers, as we discuss the user safety implications. The existing polling feature doesn't allow the host to see who voted for what, so there's an implicit anonymity to it. We may not want to violate that assumption without clearly communicating it to our users.
