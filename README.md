@@ -6,7 +6,7 @@ Imvu Scripting is an alpha feature for our users which allows you to execute scr
 
 We'll continue to add and extend documentation as the alpha continues. For now, you can find a primer here in the readme, and example scripts in the [scripts directory](scripts). In this readme file, you can find:
 
-* [Getting Started](#getting-started), an illustrated guide for how to open the UI in web/desktop room deco.
+* [Getting Started](#getting-started), an illustrated guide for how to open the UI in the Web client's room deco mode.
 * [Language and Framework](#language-and-framework), a basic overview.
 * [Event Functions](#event-functions), detailed documentation for functions called when events happen in your room.
 * [Basic imvu Methods](#basic-imvu-methods), detailed documentation for functions your script may call to provide output or request further input.
@@ -15,7 +15,7 @@ We'll continue to add and extend documentation as the alpha continues. For now, 
 
 ## Getting started
 
-To use room scripting, eligible customers can find new UI elements in room deco mode on Web and Desktop. First, navigate to room deco mode and find the new `</>` scripting icon on the top-right hand corner.
+To use room scripting, eligible customers can find new UI elements in room deco mode on Web. First, navigate to room deco mode and find the new `</>` scripting icon on the top-right hand corner.
 
 ![An image of the imvu room deco mode with the scripting icon highlighted by a red outline with a red arrow pointing to it](https://static-akm.imvu.com/imvufiles/scripting/step_one.png)
 
@@ -588,6 +588,8 @@ Outgoing messages, room invites, and other output to your visitors are also rate
 ## Providing Feedback
 
 You may file an issue against this repository, if you have a github account, or use the creator feedback forums where the experiment was first announced. We're eager to hear from our alpha testers about every aspect of the experiment.
+
+There is now a discord channel for providing feedback for the scripting project, limited to the alpha tester group. Join us at #scripting-chat, and let us know what you think!
 
 ## Footnotes
 
