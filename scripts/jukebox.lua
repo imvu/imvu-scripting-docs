@@ -4,12 +4,15 @@
 -- This is a pain, because the script editor only works on Web! You have to write the script on one platform and test on another.
 -- Sorry!
 -- This product is one of very few imvu-provided products which can display youtube videos in the scene. You can only use a youtube-enabled product for this.
-local SCREEN_PRODUCT = 52977230
+
+local SCREEN_PRODUCT = 52977230 -- change this value to change which furniture product displays the content. Only a few are capable!
+local SCREEN_PRODUCT_MATERIAL = "material1"
 
 -- The second furniture item placed in the scene is entirely up to you. I tested it with a jukebox, because I'm old.
 -- You can substitute any furniture product you happen to own for this value. For instance, 29882610 would use the penthouse couch.
 -- I selected 56190467 from the product catalog, arbitrarily, and this does not imply an endorsement of the product or creator.
-local JUKEBOX_PRODUCT = 29882610
+
+local JUKEBOX_PRODUCT = 29882610 -- change this value to change which furniture product controls the screen.
 
 -- Once the two furniture items are placed in the scene, any avatar which uses the JUKEBOX_PRODUCT furniture will have control over the screen.
 -- If we use 29882610, for instance, any avatar which sits on that couch should be able to control the screen.
@@ -23,7 +26,7 @@ local jukebox_script = {
     screen = { label = "jukebox_screen", pid = SCREEN_PRODUCT, node = "furniture.Floor.53", x = 0.6399999856948853, y = 0, z = 0.009999999776482582, yaw = 4.677482604980469, pitch = 0, roll = 0, scale = 1},
     jukebox = { label = "jukebox", pid = JUKEBOX_PRODUCT, node = "furniture.Floor.53", x = 0.9700000286102295, y = 0, z = 5.46999979019165, yaw = 4.70017147064209, pitch = 0, roll = 0, scale = 1},
     cid_lookup = {},
-    media_request = { label = "jukebox_screen", target_name = "material1" },
+    media_request = { label = "jukebox_screen", target_name = SCREEN_PRODUCT_MATERIAL },
     entries = {},
     entry_keys = {},
 
