@@ -1,19 +1,34 @@
 -- This script provides a presenter-controlled jukebox.
--- By standing at the jukebox product, they can control what plays on the screen product.
+-- The first thing the script does is place two furniture items in the scene.
+-- The screen product is what displays the youtube videos. Right now, the youtube videos only play on Desktop, iOS, and Android.
+-- This is a pain, because the script editor only works on Web! You have to write the script on one platform and test on another.
+-- Sorry!
+-- This product is one of very few imvu-provided products which can display youtube videos in the scene. You can only use a youtube-enabled product for this.
+local SCREEN_PRODUCT = 52977230
+
+-- The second furniture item placed in the scene is entirely up to you. I tested it with a jukebox, because I'm old.
+-- You can substitute any furniture product you happen to own for this value. For instance, 29882610 would use the penthouse couch.
+-- I selected 56190467 from the product catalog, arbitrarily, and this does not imply an endorsement of the product or creator.
+local JUKEBOX_PRODUCT = 29882610
+
+-- Once the two furniture items are placed in the scene, any avatar which uses the JUKEBOX_PRODUCT furniture will have control over the screen.
+-- If we use 29882610, for instance, any avatar which sits on that couch should be able to control the screen.
+-- If we use 56190467, any avatar which stands at the jukebox should be able to control the screen.
 
 local function starts_with(str, start)
     return str:sub(1, #start) == start
 end
 
 local jukebox_script = {
-    screen = { label = "jukebox_screen", pid = 52977230, node = "furniture.Floor.53", x = 0.6399999856948853, y = 0, z = 0.009999999776482582, yaw = 4.677482604980469, pitch = 0, roll = 0, scale = 1},
-    -- this pid was arbitrarily selected from the product catalog.
-    -- its inclusion in this script does not imply an endorsement of the product or the creator.
-    jukebox = { label = "jukebox", pid = 56190467, node = "furniture.Floor.53", x = 0.9700000286102295, y = 0, z = 5.46999979019165, yaw = 4.70017147064209, pitch = 0, roll = 0, scale = 1},
+    screen = { label = "jukebox_screen", pid = SCREEN_PRODUCT, node = "furniture.Floor.53", x = 0.6399999856948853, y = 0, z = 0.009999999776482582, yaw = 4.677482604980469, pitch = 0, roll = 0, scale = 1},
+    jukebox = { label = "jukebox", pid = JUKEBOX_PRODUCT, node = "furniture.Floor.53", x = 0.9700000286102295, y = 0, z = 5.46999979019165, yaw = 4.70017147064209, pitch = 0, roll = 0, scale = 1},
     cid_lookup = {},
     media_request = { label = "jukebox_screen", target_name = "material1" },
     entries = {},
     entry_keys = {},
+
+    -- this function is called when someone places their avatar at the control furniture.
+    -- it sends instructions to the public channel for how to request a particular video.
     send_instructions = function(self, actor_cid)
         local msg = "Welcome to the jukebox! Enter 'press 1' through 'press 7' to select a song, or 'press (code)' with a youtube video id. ("
         local not_first = false
@@ -72,7 +87,7 @@ local jukebox_script = {
     end
 }
 
--- No we add the jukebox entries.
+-- Now we add the jukebox entries.
 -- These example vidoes are a harrowing insight into my own, bad, taste.
 -- Nonetheless, their inclusion is the result of arbitrary youtube searches,
 -- and does not qualify as a personal or corporate endorsement of the videos,
