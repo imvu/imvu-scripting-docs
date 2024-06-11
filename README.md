@@ -124,8 +124,6 @@ The following functions are currently in development and may not be accessible t
 
 * [**data.save**](#data.save) to save persistent data for your room script, with an arbitrary user-defined key.
 * [**data.load**](#data.load) to load persistent data, using the same user-defined key.
-* [**data.save_visitor**](#data.save_visitor) to save data keyed by a member of the audience.
-* [**data.load_visitor**](#data.load_visitor) to load data keyed by a member of the audience.
 
 ## Event Functions
 
@@ -579,11 +577,103 @@ This function returns an array-style table that contains the users in the scene.
 * **seat_furni_label** is the nullable string representation of the furniture label for where the user is seated. If the user is not on a piece of furniture which was not placed by the room script, it may be `nil`.
 * **outfit** is an array-style table containing the products in the user's outfit, eg, `[80, 10000, 20000]`. This may be used to discriminate script behavior depending on whether the avatar is wearing a certain product.
 
+
+### **data.save**
+
+This function allows scripts to save arbitrary user-defined data to a persistent storage solution.
+
+This function has four parameters:
+* **key** (required) identifies where to store the value. You can pass in either a string or a table.
+    * When passing in a table, we will check for the following keys:
+        * **label** (required) is an arbitrary user-defined label for the value, max length 128 bytes.
+        * **scope** (optional, default "script") is the scope of the key. Scope informs which scripts have access to this data.
+            * scope="script" isolates the data from any other script you might run, keeping the data private. If you use scope="script" in a room script, only your room script will be able to read it. A furniture script will not be able to access it.
+            * scope="room" shares the data with other scripts in the room. If you use scope="room" in a room script, furniture scripts running in that room will have access to the information. Scripts in other rooms will not.
+            * scope="account" shares the data with all scripts running on your account. This allows you to share information across room scripts.
+        * **visitor** (optional, default 0) specifies that this data should be saved and loaded in the context of a visitor's CustomerID. When you save a visitor record, you bypass the normal limitations for the size of your dataset for a much smaller per-visitor limit. You can only access the visitor records for accounts currently in the live room where the script is running. This lets you divide data that is shared (such as a leaderboard) from data that is unique to a visitor (such as user's personal high score)
+    * When passing in a string, we will treat the parameter value as a **label** and presume the default values for scope and visitor. In other words, `data.save("hello", "world")` is functionally identical to `data.save({ label = "hello", scope = "script", visitor = 0}, "world")`
+* **value** (required) identifies what value to save. The values you can save include strings, numbers, booleans, and tables which contain strings, numbers, and booleans. You cannot save functions, and any keys or values in a table which cannot be serialized will be omitted.
+* **success_callback** (optional) specifies a function to call after the data has successfully saved. The callback provides no arguments.
+* **error_callback** (optional) specifies a function to call should the data fail to save as expected. The callback provides two arguments, one for the type of error and one for the error message. You may simply pass in `imvu.debug` as the parameter if you want error messages sent to the user logs.
+
+For a demonstration of this function, check the data.load specification, below.
+
+### **data.load**
+
+This function allows scripts to load arbitrary user-defined data to a persistent storage solution.
+
+This function has three parameters:
+* **key** (required) identifies where to load the value. You can pass in either a string or a table.
+    * When passing in a table, we will check for the following keys:
+        * **label** (required) is an arbitrary user-defined label for the value, max length 128 bytes.
+        * **scope** (optional, default "script") is the scope of the key. Scope informs which scripts have access to this data.
+            * scope="script" isolates the data from any other script you might run, keeping the data private. If you use scope="script" in a room script, only your room script will be able to read it. A furniture script will not be able to access it.
+            * scope="room" shares the data with other scripts in the room. If you use scope="room" in a room script, furniture scripts running in that room will have access to the information. Scripts in other rooms will not.
+            * scope="account" shares the data with all scripts running on your account. This allows you to share information across room scripts.
+        * **visitor** (optional, default 0) specifies that this data should be saved and loaded in the context of a visitor's CustomerID. When you save a visitor record, you bypass the normal limitations for the size of your dataset for a much smaller per-visitor limit. You can only access the visitor records for accounts currently in the live room where the script is running. This lets you divide data that is shared (such as a leaderboard) from data that is unique to a visitor (such as user's personal high score)
+    * When passing in a string, we will treat the parameter value as a **label** and presume the default values for scope and visitor. In other words, `data.load("hello", load_hello)` is functionally identical to `data.load({ label = "hello", scope = "script", visitor = 0}, load_hello)`
+* **success_callback** (required) specifies a function to call after the data has successfully saved. The callback provides no arguments.
+* **error_callback** (optional) specifies a function to call should the data fail to load as expected. The callback provides two arguments, one for the type of error and one for the error message. You may simply pass in `imvu.debug` as the parameter if you want error messages sent to the user logs.
+
+```
+-- this demo script will save values and load them regularly to monitor for changes.
+-- You can change the account-scoped value for 'hello' by setting it in another script!
+local script = {}
+local wait_for
+
+function script.event_start()
+    local function success_callback()
+        imvu.debug('The scripting system reports that we have saved hello=world')
+        
+        -- we can also define callbacks inline, as anonymous functions
+        data.load('hello', function(results)
+            imvu.debug('The scripting system reports that we have loaded hello=' .. results)
+        end, imvu.debug)
+    end
+
+    data.save('hello', 'world', success_callback, imvu.debug)
+
+    data.save({scope = 'account', label = 'hello'}, 'account!', function()
+        imvu.debug("We have saved a value for 'hello' to our account, which can be loaded in other scripts")
+    end)
+
+    -- callbacks are optional and scopes are independent.
+    data.save({scope = 'room', label = 'hello'}, 'room!')
+    
+    wait_for = nil
+end
+
+function script.event_begin_iteration(iteration, steady_clock)
+    if wait_for == nil then
+        wait_for = steady_clock + 3 -- wait three seconds for the first check, then..
+    elseif steady_clock > wait_for then
+        -- every ten seconds, check the values!
+        wait_for = wait_for + 10
+        data.load({scope = 'script', label = 'hello'}, function(val) imvu.debug("scope=script, hello=" .. val) end)
+        data.load({scope = 'room', label = 'hello'}, function(val) imvu.debug("scope=room, hello=" .. val) end)
+        data.load({scope = 'account', label = 'hello'}, function(val) imvu.debug("scope=account, hello=" .. val) end)
+    end
+end
+
+return script
+```
+
+For an example of using visitor records, see [scripts/visitor_name_change.lua](scripts/visitor_name_change.lua).
+
 ## Resource Limits
 
+### Runtime limits, CPU and Memory
 Currently, every individual room is limited to approximately 10 megabytes of memory in its lua sandbox, including around 400 kilobytes of overhead. Every individual user is limited to a single CPU core across all their rooms, and individual iterations should not exceed 50ms of lua processing time per iteration.
 
+### API limits, Messages and Invites
 Outgoing messages, room invites, and other output to your visitors are also rate-limited, to help prevent obstructive amounts of spam. No matter what you attempt to do with your script, you should only be able to target current members of the room. This means a user can always escape unwanted behavior by simply leaving your room.
+
+### Data limits, Disk Usage and Data Retention
+The data modules are limited to a total usage of 10 megabytes for non-visitor data. Visitor data has no total limit cap, but a limit of 5 kilobytes per visitor across all scopes. These limits are provisional and subject to change.
+
+No matter what kind of data you might save to our system, we reserve the right to delete stale data. Right now, the provisional measure is deleting data that has not been *read* in at least the past 365 days. You don't have to update data regularly to keep it, but if you never read a key, we presume it is no longer necessary. 
+
+Finally, there is a throughput limit. If you save and/or load data too quickly, you may start to get error messages. This is to help curb intentional abuse of the system.
 
 ## Providing Feedback
 
